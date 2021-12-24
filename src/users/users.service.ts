@@ -1,69 +1,70 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {
-  private counterId = 1;
-  private users: User[] = [
-    {
-      id: 1,
-      name: 'Fabian',
-      lastName: 'Siatama',
-      phone: '3111111212',
-      email: 'aaa@dddd.com',
-      password: 'secret',
-    },
-  ];
+  constructor(private prismaService: PrismaService) {}
 
-  create(createUserDto: CreateUserDto) {
-    this.counterId = this.counterId + 1;
-    const newUser = {
-      id: this.counterId,
-      ...createUserDto,
-    };
-    this.users.push(newUser);
-    return newUser;
+  async create(createUserDto: CreateUserDto) {
+    try {
+      const data = {
+        ...createUserDto,
+      };
+      const result = await this.prismaService.user.create({
+        data,
+      });
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   findAll() {
-    return this.users;
+    return this.prismaService.user.findMany();
   }
 
-  findOne(id: number) {
-    const user = this.users.find((item) => item.id === id);
-    if (!user) {
-      throw new NotFoundException(`User #${id} not found`);
+  async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
+    const result = await this.prismaService.user.findUnique({
+      where: userWhereUniqueInput,
+    });
+    if (!result) {
+      throw new NotFoundException(`User not found`);
     }
-    return user;
+    return result;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    const user = this.findOne(id);
-    const index = this.users.findIndex((item) => item.id === id);
-    this.users[index] = {
-      ...user,
-      ...updateUserDto,
-    };
-    return this.users[index];
-  }
-
-  remove(id: number) {
-    const index = this.users.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw new NotFoundException(`User #${id} not found`);
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    try {
+      const result = await this.prismaService.user.update({
+        data: updateUserDto,
+        where: {
+          id,
+        },
+      });
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
     }
-    this.users.splice(index, 1);
-    return true;
   }
 
-  // getOrdersByUser(id: number): Order {
-  //   const user = this.findOne(id);
-  //   return {
-  //     date: new Date(),
-  //     user,
-  //     products: this.productsService.findAll(),
-  //   };
-  // }
+  async remove(id: number) {
+    try {
+      await this.prismaService.user.delete({
+        where: {
+          id,
+        },
+      });
+      return { success: true };
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
 }

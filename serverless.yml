@@ -3,7 +3,7 @@ service: sls-nestjs-muncher
 provider:
   name: aws
   runtime: nodejs14.x
-  region: eu-west-3
+  region: us-west-1
   lambdaHashingVersion: 20201221
 
 plugins:
