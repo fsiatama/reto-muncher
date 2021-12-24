@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
-import { Prisma } from '@prisma/client';
+import { BadRequestException, Injectable } from '@nestjs/common';
 
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -14,45 +9,32 @@ export class ProductsService {
   constructor(private prismaService: PrismaService) {}
 
   async create(createProductDto: CreateProductDto) {
-    try {
-      const data = {
-        ...createProductDto,
-      };
-      const result = await this.prismaService.product.create({
-        data,
-      });
-      return result;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+    return this.prismaService.product.create({ data: createProductDto });
   }
 
   findAll() {
     return this.prismaService.product.findMany();
   }
 
-  async findOne(productWhereUniqueInput: Prisma.ProductWhereUniqueInput) {
-    const result = await this.prismaService.product.findUnique({
-      where: productWhereUniqueInput,
-    });
-    if (!result) {
-      throw new NotFoundException(`Product not found`);
-    }
-    return result;
+  findOne(id: number) {
+    return this.prismaService.product.findUnique({ where: { id } });
   }
 
+  // async findOne(productWhereUniqueInput: Prisma.ProductWhereUniqueInput) {
+  //   const result = await this.prismaService.product.findUnique({
+  //     where: productWhereUniqueInput,
+  //   });
+  //   if (!result) {
+  //     throw new NotFoundException(`Product not found`);
+  //   }
+  //   return result;
+  // }
+
   async update(id: number, updateProductDto: UpdateProductDto) {
-    try {
-      const result = await this.prismaService.product.update({
-        data: updateProductDto,
-        where: {
-          id,
-        },
-      });
-      return result;
-    } catch (error) {
-      throw new BadRequestException(error.message);
-    }
+    return this.prismaService.product.update({
+      where: { id: id },
+      data: updateProductDto,
+    });
   }
 
   async remove(id: number) {

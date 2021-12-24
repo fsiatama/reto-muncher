@@ -6,6 +6,8 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
+import { OrderDetailsModule } from './order-details/order-details.module';
+import { BalanceModule } from './balance/balance.module';
 import config from './config';
 
 @Module({
@@ -19,6 +21,8 @@ import config from './config';
     ProductsModule,
     OrdersModule,
     PrismaModule,
+    OrderDetailsModule,
+    BalanceModule,
   ],
   controllers: [AppController],
   providers: [AppService],

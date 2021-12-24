@@ -1,19 +1,45 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(private prismaService: PrismaService) {}
+
+  async create(createOrderDto: CreateOrderDto) {
+    try {
+      const result = await this.prismaService.order.create({
+        data: {
+          user: {
+            connect: {
+              id: createOrderDto.userId,
+            },
+          },
+        },
+        include: {
+          user: true,
+        },
+      });
+      return result;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   findAll() {
-    return `This action returns all orders`;
+    return this.prismaService.order.findMany({
+      include: { user: true },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} order`;
+    return this.prismaService.order.findMany({
+      where: {
+        id,
+      },
+      include: { user: true },
+    });
   }
 
   update(id: number, updateOrderDto: UpdateOrderDto) {
