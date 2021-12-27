@@ -1,9 +1,24 @@
-import { Decimal } from '@prisma/client/runtime';
+import { Balance } from '@prisma/client';
+import { ApiProperty } from '@nestjs/swagger';
+
 import { User } from '../../users/entities/user.entity';
 
-export class Balance {
+export class BalanceEntity implements Balance {
+  @ApiProperty()
   id: number;
+
+  @ApiProperty()
   userId: number;
+
+  @ApiProperty()
   user: User;
-  total: Decimal;
+
+  @ApiProperty()
+  total: number;
+
+  @ApiProperty()
+  createdAt: Date;
+
+  @ApiProperty()
+  updatedAt: Date;
 }

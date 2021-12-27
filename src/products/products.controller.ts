@@ -35,7 +35,7 @@ export class ProductsController {
   @Get(':id')
   @ApiOkResponse({ type: [ProductEntity] })
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.productsService.findOne(id);
+    return this.productsService.findOne({ id });
   }
 
   @Patch(':id')
@@ -47,9 +47,20 @@ export class ProductsController {
     return this.productsService.update(id, updateProductDto);
   }
 
+  @Patch(':id/decrement-stock')
+  @ApiCreatedResponse({ type: ProductEntity })
+  decrement(@Param('id', ParseIntPipe) id: number, @Body() { quantity }) {
+    return this.productsService.decrementStock(id, quantity);
+  }
+  @Patch(':id/increment-stock')
+  @ApiCreatedResponse({ type: ProductEntity })
+  increment(@Param('id', ParseIntPipe) id: number, @Body() { quantity }) {
+    return this.productsService.incrementStock(id, quantity);
+  }
+
   @Delete(':id')
   @ApiOkResponse({ type: [ProductEntity] })
-  remove(@Param('id') id: string) {
-    return this.productsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.productsService.remove(id);
   }
 }

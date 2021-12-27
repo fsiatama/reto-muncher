@@ -1,4 +1,3 @@
-import { Decimal } from '@prisma/client/runtime';
 import { Order, Product } from '@prisma/client';
 
 export class OrderDetail {
@@ -7,6 +6,6 @@ export class OrderDetail {
   product: Product;
   orderId: number;
   order: Order;
-  quantity: Decimal;
-  subtotal: Decimal;
+  quantity: number;
+  subtotal: number;
 }
