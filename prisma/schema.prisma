@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -17,11 +18,10 @@ model User {
   phone           String?
   lastName        String?
   password        String
-  Order           Order[]
+  order           Order[]
   sendTransfer    Transfer[] @relation("sender")
   receiveTransfer Transfer[] @relation("receiver")
-  Balance         Balance[]
-  Transfer        Transfer[]
+  balance         Balance?
 }
 
 model Product {
@@ -33,7 +33,7 @@ model Product {
   price       Decimal
   stock       Decimal       @default(0)
   image       String?
-  OrderDetail OrderDetail[]
+  orderDetail OrderDetail[]
 }
 
 model Order {
@@ -42,7 +42,7 @@ model Order {
   updatedAt   DateTime      @updatedAt
   user        User          @relation(fields: [userId], references: [id])
   userId      Int
-  OrderDetail OrderDetail[]
+  orderDetail OrderDetail[]
 }
 
 model OrderDetail {
@@ -56,23 +56,21 @@ model OrderDetail {
 }
 
 model Transfer {
+  id         Int      @id @default(autoincrement())
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
   toUser     User     @relation("sender", fields: [toUserId], references: [id])
   toUserId   Int
   fromUser   User     @relation("receiver", fields: [fromUserId], references: [id])
   fromUserId Int
-
-  User   User? @relation(fields: [userId], references: [id])
-  userId Int?
-  @@id([fromUserId, toUserId])
+  amount     Float
 }
 
 model Balance {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
-  total     Float
+  userId    Int      @unique
+  total     Float    @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int
 }

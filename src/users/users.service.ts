@@ -17,6 +17,11 @@ export class UsersService {
     try {
       const data = {
         ...createUserDto,
+        balance: {
+          create: {
+            total: 0.0,
+          },
+        },
       };
       const result = await this.prismaService.user.create({
         data,
@@ -28,12 +33,15 @@ export class UsersService {
   }
 
   findAll() {
-    return this.prismaService.user.findMany();
+    return this.prismaService.user.findMany({
+      include: { balance: true },
+    });
   }
 
   async findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput) {
     const result = await this.prismaService.user.findUnique({
       where: userWhereUniqueInput,
+      include: { balance: true },
     });
     if (!result) {
       throw new NotFoundException(`User not found`);

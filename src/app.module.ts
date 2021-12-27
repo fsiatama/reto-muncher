@@ -8,6 +8,7 @@ import { OrdersModule } from './orders/orders.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { OrderDetailsModule } from './order-details/order-details.module';
 import { BalanceModule } from './balance/balance.module';
+import { TransfersModule } from './transfers/transfers.module';
 import config from './config';
 
 @Module({
@@ -23,6 +24,7 @@ import config from './config';
     PrismaModule,
     OrderDetailsModule,
     BalanceModule,
+    TransfersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
