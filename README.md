@@ -4,7 +4,7 @@
 
 ## Description
 
-Simple NodeJS application for educational purposes Built with [Nest](https://github.com/nestjs/nest), [Prisma](https://www.prisma.io/), [SQLite][https://www.sqlite.org/] and [Swagger](https://swagger.io/)
+Simple NodeJS application for educational purposes Built with [Nest](https://github.com/nestjs/nest), [Prisma](https://www.prisma.io), [SQLite](https://www.sqlite.org) and [Swagger](https://swagger.io)
 
 ## Features
 
